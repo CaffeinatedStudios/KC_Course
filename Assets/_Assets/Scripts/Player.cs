@@ -33,15 +33,18 @@ public class Player : MonoBehaviour
         else {
             // Cannot move directly to predicted position
             // So we try to either move in the x or y depending on where is clear
-            Vector3 moveDirX = new Vector3(moveDir.x, 0, 0);
-            Vector3 moveDirY = new Vector3(0, moveDir.y, 0);
+        Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
+            Vector3 moveDirZ = new Vector3(0, 0, moveDir.z).normalized;
 
-            if (CanMove(moveDirX))
+            // Check if we can move on the X axis
+            if (moveDir.x != 0 && CanMove(moveDirX))
             {
                 UpdateTransform(moveDirX);
-            } else if (CanMove(moveDirY))
+            } 
+            // Check if we can move on the Z axis
+            else if (moveDir.z != 0 && CanMove(moveDirZ))
             {
-                UpdateTransform(moveDirY);
+                UpdateTransform(moveDirZ);
             }
         }
         
@@ -56,6 +59,7 @@ public class Player : MonoBehaviour
         transform.position += _moveDir * horizontalSpeed * Time.deltaTime;
     }
 
+    // Returns true if the raycast doesn't hit anything
     private bool CanMove(Vector3 _moveDir) {
         return !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, _moveDir, moveDistance);
     }
